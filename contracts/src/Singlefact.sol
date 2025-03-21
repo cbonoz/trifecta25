@@ -1,138 +1,130 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.20;
 
 contract Singlefact {
-    struct Business {
-        address owner;
-        string name;
-        uint256 rewardThreshold;
-        uint256 rewardAmount;
-        bool isActive;
-        address paymentAddress;
-        string businessContext;
-    }
-
-    struct Transaction {
-        address user;
-        uint256 amount;
+    struct Attestation {
+        bytes32 id;
+        address authority;
+        string attestationType;
+        bytes32 dataHash;
         uint256 timestamp;
+        bool active;
     }
 
-    // Business hash => Business details
-    mapping(bytes32 => Business) public businesses;
-    // Business hash => User address => Points balance
-    mapping(bytes32 => mapping(address => uint256)) public userPoints;
-    // Business hash => Transactions
-    mapping(bytes32 => Transaction[]) public transactions;
+    struct Authority {
+        string name;
+        string[] attestationTypes;
+        bool active;
+    }
 
-    event BusinessRegistered(bytes32 indexed businessHash, string name, address owner);
-    event PointsEarned(bytes32 indexed businessHash, address indexed user, uint256 points);
-    event RewardClaimed(bytes32 indexed businessHash, address indexed user, uint256 amount);
+    mapping(address => Authority) public authorities;
+    mapping(bytes32 => Attestation) public attestations;
+    mapping(address => mapping(string => uint256)) public attestationCounts;
+    mapping(address => bytes32[]) public authorityAttestations;
 
-    modifier onlyBusinessOwner(bytes32 businessHash) {
-        require(businesses[businessHash].owner == msg.sender, "Not business owner");
+    event AuthorityRegistered(address indexed authority, string name);
+    event AttestationCreated(bytes32 indexed id, address indexed authority, string attestationType);
+    event AttestationVerified(bytes32 indexed id, address indexed verifier);
+    event AuthorityDeactivated(address indexed authority);
+
+    modifier onlyAuthority() {
+        require(authorities[msg.sender].active, "Not an active authority");
         _;
     }
 
-    function registerBusiness(
-        bytes32 businessHash,
-        string memory name,
-        uint256 rewardThreshold,
-        uint256 rewardAmount,
-        address paymentAddress,
-        string memory businessContext
-    ) external {
-        require(!businesses[businessHash].isActive, "Business already registered");
-
-        businesses[businessHash] = Business({
-            owner: msg.sender,
+    function registerAuthority(string memory name, string[] memory attestationTypes) external {
+        require(!authorities[msg.sender].active, "Already registered");
+        authorities[msg.sender] = Authority({
             name: name,
-            rewardThreshold: rewardThreshold,
-            rewardAmount: rewardAmount,
-            isActive: true,
-            paymentAddress: paymentAddress == address(0) ? msg.sender : paymentAddress,
-            businessContext: businessContext
+            attestationTypes: attestationTypes,
+            active: true
+        });
+        emit AuthorityRegistered(msg.sender, name);
+    }
+
+    function createAttestation(
+        string memory attestationType,
+        bytes32 dataHash,
+        bytes calldata verification // Simplified verification data
+    ) external onlyAuthority returns (bytes32) {
+        require(isValidAttestationType(msg.sender, attestationType), "Invalid attestation type");
+
+        // Simplified verification - just check that some data was provided
+        require(verification.length > 0, "Verification data required");
+
+        bytes32 attestationId = keccak256(abi.encodePacked(
+            msg.sender,
+            attestationType,
+            dataHash,
+            block.timestamp
+        ));
+
+        attestations[attestationId] = Attestation({
+            id: attestationId,
+            authority: msg.sender,
+            attestationType: attestationType,
+            dataHash: dataHash,
+            timestamp: block.timestamp,
+            active: true
         });
 
-        emit BusinessRegistered(businessHash, name, msg.sender);
+        authorityAttestations[msg.sender].push(attestationId);
+        attestationCounts[msg.sender][attestationType]++;
+
+        emit AttestationCreated(attestationId, msg.sender, attestationType);
+        return attestationId;
     }
 
-    function recordTransaction(
-        bytes32 businessHash,
-        address user
-    ) external payable {
-        require(businesses[businessHash].isActive, "Business not active");
-        require(msg.value >= 0.001 ether, "Minimum transaction amount is 0.001 ETH");
+    function verifyAttestation(
+        bytes32 attestationId,
+        bytes calldata verification
+    ) external view returns (bool) {
+        Attestation memory attestation = attestations[attestationId];
+        require(attestation.active, "Attestation not active");
 
-        uint256 amount = msg.value;
-
-        transactions[businessHash].push(Transaction({
-            user: user,
-            amount: amount,
-            timestamp: block.timestamp
-        }));
-
-        // Add a single point
-        userPoints[businessHash][user] += 1;
-        emit PointsEarned(businessHash, user, 1);
-
-        // Transfer the payment to the business owner
-        payable(businesses[businessHash].owner).transfer(amount);
+        // Simplified verification - just check that data matches
+        return verification.length > 0;
     }
 
-    function claimReward(bytes32 businessHash, address user) external onlyBusinessOwner(businessHash) returns (string memory) {
-        return _claimReward(businessHash, user);
+    function isValidAttestationType(address authority, string memory attestationType)
+        internal view returns (bool)
+    {
+        string[] memory types = authorities[authority].attestationTypes;
+        for (uint i = 0; i < types.length; i++) {
+            if (keccak256(bytes(types[i])) == keccak256(bytes(attestationType))) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    function _claimReward(bytes32 businessHash, address user) internal returns (string memory) {
-        Business storage business = businesses[businessHash];
-        require(userPoints[businessHash][user] >= business.rewardThreshold, "Insufficient points");
-
-        userPoints[businessHash][user] -= business.rewardThreshold;
-        emit RewardClaimed(businessHash, user, business.rewardAmount);
-
-        return "Reward claimed";
+    function getAuthorityAttestations(address authority)
+        external view returns (bytes32[] memory)
+    {
+        return authorityAttestations[authority];
     }
 
-    function getPoints(bytes32 businessHash, address user) external view returns (uint256) {
-        return userPoints[businessHash][user];
+    function deactivateAuthority() external onlyAuthority {
+        authorities[msg.sender].active = false;
+        emit AuthorityDeactivated(msg.sender);
     }
 
-    function getTransactionCount(bytes32 businessHash) external view returns (uint256) {
-        return transactions[businessHash].length;
-    }
-
-    function updateRewardConfig(
-        bytes32 businessHash,
-        uint256 newThreshold,
-        uint256 newAmount
-    ) external onlyBusinessOwner(businessHash) {
-        businesses[businessHash].rewardThreshold = newThreshold;
-        businesses[businessHash].rewardAmount = newAmount;
-    }
-
-    function getBusinessInfo(bytes32 businessHash)
-        external
-        view
-        returns (
-            address owner,
-            string memory name,
-            uint256 rewardThreshold,
-            uint256 rewardAmount,
-            bool isActive,
-            address paymentAddress,
-            string memory businessContext
+    function getAttestationDetails(bytes32 attestationId)
+        external view returns (
+            address authority,
+            string memory attestationType,
+            bytes32 dataHash,
+            uint256 timestamp,
+            bool active
         )
     {
-        Business storage business = businesses[businessHash];
+        Attestation memory attestation = attestations[attestationId];
         return (
-            business.owner,
-            business.name,
-            business.rewardThreshold,
-            business.rewardAmount,
-            business.isActive,
-            business.paymentAddress,
-            business.businessContext
+            attestation.authority,
+            attestation.attestationType,
+            attestation.dataHash,
+            attestation.timestamp,
+            attestation.active
         );
     }
 }

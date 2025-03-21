@@ -17,7 +17,7 @@ import SinglefactAbi from '@/contracts/Singlefact.json';
 import { getEthConversionRate } from '@/lib/fetch';
 import { BusinessInfo } from '@/lib/types';
 
-export default function AttestationPageContent() {
+export default function VerifyPageContent() {
   const { attestationId } = useParams();
   const { address } = useAccount();
   const signer = useEthersSigner({

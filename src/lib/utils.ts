@@ -28,7 +28,7 @@ export function createAttestationUrl(
   attestationId: string | undefined,
   baseUrl?: string,
 ): string {
-  return `${getBaseUrl(baseUrl)}/attestation/${attestationId || ''}`;
+  return `${getBaseUrl(baseUrl)}/verify/${attestationId || ''}`;
 }
 
 export const isEmpty = (value: any): boolean => {
