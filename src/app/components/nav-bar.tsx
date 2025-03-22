@@ -11,7 +11,7 @@ import { Bars3Icon, ShieldCheckIcon, XMarkIcon } from '@heroicons/react/24/outli
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 
 import { siteConfig } from '@/constant/config';
-import { coinbaseConnector } from '../contexts/wagmiConfig';
+import { metamaskConnector } from '../contexts/wagmiConfig';
 
 const navigation = [
   { name: 'Home', href: '/', current: false },
@@ -89,7 +89,7 @@ export default function NavBar() {
               <button
                 onClick={() =>
                   connect({
-                    connector: coinbaseConnector,
+                    connector: metamaskConnector,
                     chainId: siteConfig.defaultChain.id,
                   })
                 }

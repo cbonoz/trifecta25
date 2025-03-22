@@ -1,49 +1,51 @@
 'use client';
-import { useAccount, useReadContract } from 'wagmi';
-import { useSinglefact } from '@/hooks/useSinglefact';
+import { useAccount } from 'wagmi';
 import ButtonLink from '@/components/links/ButtonLink';
-import { DocumentIcon, PlusIcon } from '@heroicons/react/24/outline';
-import SinglefactABI from '@/contracts/Singlefact.json';
-import { siteConfig } from '@/constant/config';
+import { DocumentIcon, EnvelopeIcon, PlusIcon, ClipboardIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useEffect, useState } from 'react';
-
-type AttestationDetails = {
-  authority: string;
-  attestationType: string;
-  dataHash: string;
-  timestamp: number;
-  active: boolean;
-};
+import { Attestation } from '@/lib/types';
+import { getAttestations } from '@/lib/methodCalls';
+import { useEthersSigner } from '@/app/contexts/useEthersSigner';
+import { siteConfig } from '@/constant/config';
+import { Dialog } from '@headlessui/react';
+import { generateAttestationEmailContent } from '@/util';
 
 export default function ManagePage() {
   const { address } = useAccount();
-  const { attestations, loadingAttestations } = useSinglefact();
-  const [attestationDetails, setAttestationDetails] = useState<Record<string, AttestationDetails>>({});
-
-  const { data: details } = useReadContract({
-    address: siteConfig.contractAddress as `0x${string}`,
-    abi: SinglefactABI.abi,
-    functionName: 'getAttestationDetails',
-    args: [attestations?.[0]],
-    enabled: Boolean(attestations?.length),
-  });
+  const signer = useEthersSigner({ chainId: siteConfig.defaultChain.id });
+  const [attestations, setAttestations] = useState<Attestation[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedAttestation, setSelectedAttestation] = useState<Attestation | null>(null);
+  const [emailModalOpen, setEmailModalOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    const fetchDetails = async () => {
-      if (!attestations?.length) return;
-
-      const details: Record<string, AttestationDetails> = {};
-      for (const id of attestations) {
-        const result = await fetch(`/api/attestations/${id}`); // You'll need to create this API endpoint
-        if (result.ok) {
-          details[id] = await result.json();
-        }
+    const loadAttestations = async () => {
+      if (!signer) return;
+      try {
+        setLoading(true);
+        const atts = await getAttestations(signer);
+        setAttestations(atts);
+      } catch (error) {
+        console.error('Error loading attestations:', error);
+      } finally {
+        setLoading(false);
       }
-      setAttestationDetails(details);
     };
 
-    fetchDetails();
-  }, [attestations]);
+    loadAttestations();
+  }, [signer]);
+
+  const handleShareViaEmail = (attestation: Attestation) => {
+    setSelectedAttestation(attestation);
+    setEmailModalOpen(true);
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   if (!address) {
     return (
@@ -63,7 +65,7 @@ export default function ManagePage() {
         </ButtonLink>
       </div>
 
-      {loadingAttestations ? (
+      {loading ? (
         <p>Loading attestations...</p>
       ) : attestations?.length === 0 ? (
         <div className='text-center py-12'>
@@ -75,35 +77,113 @@ export default function ManagePage() {
         </div>
       ) : (
         <div className='grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
-          {attestations?.map((attestationId: string) => {
-            const details = attestationDetails[attestationId];
-            return (
-              <div
-                key={attestationId}
-                className='border rounded-lg p-4 hover:shadow-md transition-shadow'
-              >
-                <h3 className='font-semibold mb-2'>{details?.attestationType || 'Loading...'}</h3>
-                <p className='text-sm text-gray-600 mb-2'>
-                  Created: {details?.timestamp ? new Date(details.timestamp * 1000).toLocaleString() : 'Loading...'}
-                </p>
-                <p className='text-sm text-gray-600 mb-4 truncate'>
-                  Hash: {details?.dataHash || 'Loading...'}
-                </p>
-                <div className='flex justify-between items-center'>
-                  <span className={`px-2 py-1 rounded-full text-xs ${
-                    details?.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                  }`}>
-                    {details?.active ? 'Active' : 'Inactive'}
-                  </span>
-                  <ButtonLink href={`/verify/${attestationId}`} variant='light'>
-                    View Details
+          {attestations.map((attestation) => (
+            <div
+              key={attestation.id}
+              className='border rounded-lg p-4 hover:shadow-md transition-shadow'
+            >
+              <h3 className='font-semibold mb-2'>{attestation.title}</h3>
+              <p className='text-sm text-gray-600 mb-2'>{attestation.description}</p>
+              <p className='text-sm text-gray-600 mb-2 truncate'>
+                Statement: {attestation.statement}
+              </p>
+              <p className='text-sm text-gray-600 mb-2'>
+                Created: {new Date(attestation.timestamp * 1000).toLocaleString()}
+              </p>
+              <div className='flex justify-between items-center mt-4'>
+                <span className={`px-2 py-1 rounded-full text-xs ${
+                  attestation.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                }`}>
+                  {attestation.active ? 'Active' : 'Inactive'}
+                </span>
+
+                <div className='flex space-x-2'>
+                  <button
+                    onClick={() => handleShareViaEmail(attestation)}
+                    className='flex items-center text-gray-600 hover:text-primary-600 text-sm'
+                  >
+                    <EnvelopeIcon className='h-5 w-5 mr-1' />
+                    Email Verifier
+                  </button>
+
+                  <ButtonLink href={`/verify/${attestation.id}`} variant='light'>
+                    View
                   </ButtonLink>
                 </div>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       )}
+
+      {/* Email Content Modal */}
+      <Dialog
+        open={emailModalOpen}
+        onClose={() => setEmailModalOpen(false)}
+        className="relative z-50"
+      >
+        <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+
+        <div className="fixed inset-0 flex items-center justify-center p-4">
+          <Dialog.Panel className="mx-auto max-w-2xl rounded bg-white p-6 shadow-xl w-full">
+            <div className="flex justify-between items-center mb-4">
+              <Dialog.Title className="text-lg font-medium">Email Content</Dialog.Title>
+              <button
+                onClick={() => setEmailModalOpen(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <XMarkIcon className="h-5 w-5" />
+              </button>
+            </div>
+
+            {selectedAttestation && (
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-sm font-medium text-gray-700">Subject</h3>
+                  <div className="flex items-center mt-1">
+                    <p className="text-sm bg-gray-50 p-2 rounded flex-grow break-all">
+                      {generateAttestationEmailContent(selectedAttestation).subject}
+                    </p>
+                    <button
+                      onClick={() => copyToClipboard(generateAttestationEmailContent(selectedAttestation).subject)}
+                      className="ml-2 text-gray-500 hover:text-primary-600 flex-shrink-0"
+                    >
+                      <ClipboardIcon className="h-5 w-5" />
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-sm font-medium text-gray-700">Body</h3>
+                  <div className="flex items-start mt-1">
+                    <pre className="text-sm bg-gray-50 p-3 rounded whitespace-pre-wrap flex-grow font-sans overflow-auto max-h-60">
+                      {generateAttestationEmailContent(selectedAttestation).body}
+                    </pre>
+                    <button
+                      onClick={() => copyToClipboard(generateAttestationEmailContent(selectedAttestation).body)}
+                      className="ml-2 mt-1 text-gray-500 hover:text-primary-600 flex-shrink-0"
+                    >
+                      <ClipboardIcon className="h-5 w-5" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex justify-between">
+                  {copied && (
+                    <span className="text-green-600 text-sm">Copied to clipboard!</span>
+                  )}
+                  <button
+                    onClick={() => setEmailModalOpen(false)}
+                    className="ml-auto bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            )}
+          </Dialog.Panel>
+        </div>
+      </Dialog>
     </div>
   );
 }

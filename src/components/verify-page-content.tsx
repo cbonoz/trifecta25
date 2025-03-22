@@ -1,61 +1,65 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { useReadContract } from 'wagmi';
-import { DocumentCheckIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
+import { DocumentCheckIcon, ShieldCheckIcon, LockClosedIcon } from '@heroicons/react/24/outline';
+import { useEthersSigner } from '@/app/contexts/useEthersSigner';
 import { siteConfig } from '@/constant/config';
-import SinglefactABI from '@/contracts/Singlefact.json';
-import { useSinglefact } from '@/hooks/useSinglefact';
-
-type AttestationDetails = {
-  authority: `0x${string}`;
-  attestationType: string;
-  dataHash: `0x${string}`;
-  timestamp: bigint;
-  active: boolean;
-};
-
-type Params = {
-  id: string;
-};
+import { getAttestationDetails, validateAttestation } from '@/lib/methodCalls';
+import { Attestation } from '@/lib/types';
 
 export default function VerifyPageContent() {
-  const { id } = useParams<Params>();
-  const [file, setFile] = useState<File | null>(null);
-  const [verificationStatus, setVerificationStatus] = useState<boolean | null>(null);
+  const { attestationId } = useParams();
+  const [proof, setProof] = useState('');
+  const [attestation, setAttestation] = useState<Attestation | null>(null);
+  const [isVerified, setIsVerified] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { generateDocumentHash, verifyAttestation } = useSinglefact();
+  const [error, setError] = useState<string | null>(null);
+  const [verificationTime, setVerificationTime] = useState<Date | null>(null);
+  const signer = useEthersSigner({ chainId: siteConfig.defaultChain.id });
 
-  const { data: attestationDetails, isLoading } = useReadContract<
-    typeof SinglefactABI.abi,
-    'getAttestationDetails',
-    AttestationDetails
-  >({
-    address: siteConfig.contractAddress as `0x${string}`,
-    abi: SinglefactABI.abi,
-    functionName: 'getAttestationDetails',
-    args: [id as `0x${string}`],
-  });
+  useEffect(() => {
+    const loadAttestation = async () => {
+      if (!attestationId || !signer) {
+        return;
+      }
+
+      try {
+        const details = await getAttestationDetails(signer, attestationId as string);
+        setAttestation(details);
+      } catch (error: any) {
+        setError('Failed to load attestation details');
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadAttestation();
+  }, [attestationId, signer]);
 
   const handleVerification = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!file) return;
+    if (!proof || !attestation || !signer || !attestationId) return;
 
     setLoading(true);
+    setError(null);
     try {
-      const hash = await generateDocumentHash(file);
-      const verification = new Uint8Array([1, 2, 3, 4]);
-      const result = await verifyAttestation(id as string, verification);
-      setVerificationStatus(Boolean(result));
-    } catch (error) {
+      const isValid = await validateAttestation(signer, attestationId as string, proof);
+      if (isValid) {
+        setIsVerified(true);
+        setVerificationTime(new Date()); // Set the current time as verification timestamp
+      } else {
+        setError('Invalid proof provided');
+      }
+    } catch (error: any) {
       console.error('Verification failed:', error);
-      setVerificationStatus(false);
+      setError(error.message || 'Verification failed');
     }
     setLoading(false);
   };
 
-  if (isLoading) {
+  if (loading) {
     return (
       <div className='container mx-auto px-4 py-8 text-center'>
         <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto'></div>
@@ -64,15 +68,133 @@ export default function VerifyPageContent() {
     );
   }
 
-  if (!attestationDetails) {
+  if (!signer) {
     return (
       <div className='container mx-auto px-4 py-8 text-center'>
-        <h2 className='text-xl font-bold text-red-600'>Attestation not found</h2>
+        <h2 className='text-xl font-bold'>Please connect your wallet</h2>
+        <p className='mt-2 text-gray-600'>To verify the attestation, connect your wallet.</p>
       </div>
     );
   }
 
-  // TODO: implement page
-  return <div></div>
+  if (!attestation && !loading) {
+    return (
+      <div className='container mx-auto px-4 py-8 text-center'>
+        <h2 className='text-xl font-bold text-red-600'>Attestation not found</h2>
+        {error && <p className='mt-2 text-red-500'>{error}</p>}
+      </div>
+    );
+  }
 
+  if (!attestation) {
+    return null; // Wait for the attestation to load
+  }
+
+
+  return (
+    <div className='container mx-auto px-4 py-8'>
+      <div className='max-w-2xl mx-auto'>
+        <div className='text-center mb-8'>
+          <ShieldCheckIcon className='mx-auto h-12 w-12 text-primary-600' />
+          <h1 className='mt-3 text-3xl font-bold'>Verify Attestation</h1>
+          <p className='mt-2 text-gray-600'>
+            Verify the authenticity of this attestation
+          </p>
+        </div>
+
+        <div className='bg-white shadow rounded-lg p-6 space-y-6'>
+          {/* Attestation Details */}
+          <div>
+            <h2 className='text-lg font-semibold mb-4'>Attestation Details</h2>
+            <dl className='grid grid-cols-1 gap-3'>
+              <div>
+                <dt className='text-sm font-medium text-gray-500'>Title</dt>
+                <dd className='text-sm text-gray-900'>{attestation.title}</dd>
+              </div>
+              {/* <div>
+                <dt className='text-sm font-medium text-gray-500'>Description</dt>
+                <dd className='text-sm text-gray-900'>{attestation.description}</dd>
+              </div> */}
+              <div>
+                <dt className='text-sm font-medium text-gray-500'>Owner</dt>
+                <dd className='text-sm font-mono text-gray-900'>{attestation.owner}</dd>
+              </div>
+              <div>
+                <dt className='text-sm font-medium text-gray-500'>Created</dt>
+                <dd className='text-sm text-gray-900'>
+                  {new Date(attestation.timestamp * 1000).toLocaleString()}
+                </dd>
+              </div>
+              <div>
+                <dt className='text-sm font-medium text-gray-500'>Status</dt>
+                <dd className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                  ${attestation.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                  {attestation.active ? 'Active' : 'Inactive'}
+                </dd>
+              </div>
+            </dl>
+          </div>
+
+          {/* Statement Section */}
+          <div className='border-t pt-6'>
+            <h3 className='text-lg font-semibold mb-4'>Protected Statement</h3>
+            {isVerified ? (
+              <div className='bg-green-50 p-4 rounded-md'>
+                <p className='text-green-700'>{attestation.statement}</p>
+                {verificationTime && (
+                  <div className='mt-3 pt-3 border-t border-green-200'>
+                    <p className='text-sm text-green-600'>
+                      <span className='font-medium'>Verification Time:</span> {verificationTime.toLocaleString()}
+                    </p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className='bg-gray-50 p-4 rounded-md flex items-center justify-center gap-2'>
+                <LockClosedIcon className='h-5 w-5 text-gray-400' />
+                <p className='text-gray-500'>Verify proof to reveal statement</p>
+              </div>
+            )}
+          </div>
+
+          {/* Verification Form */}
+          {!isVerified && attestation.active && (
+            <form onSubmit={handleVerification} className='border-t pt-6'>
+              <div className='space-y-4'>
+                <label className='block text-sm font-medium text-gray-700'>
+                  Enter Proof
+                  <textarea
+                    className='mt-1 block w-full rounded-md border-gray-300 shadow-sm'
+                    value={proof}
+                    onChange={(e) => setProof(e.target.value)}
+                    placeholder="Enter the proof provided by the attestation owner"
+                    required
+                  />
+                </label>
+
+                <button
+                  type='submit'
+                  disabled={loading}
+                  className='w-full flex justify-center items-center bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 disabled:opacity-50'
+                >
+                  {loading ? (
+                    <>
+                      <div className='animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2' />
+                      Verifying...
+                    </>
+                  ) : (
+                    'Verify'
+                  )}
+                </button>
+
+                {error && (
+                  <p className='text-red-500 text-sm text-center'>{error}</p>
+                )}
+              </div>
+            </form>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }
