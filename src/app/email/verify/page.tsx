@@ -5,9 +5,10 @@ import zkeSDK, { Proof } from "@zk-email/sdk"
 import { siteConfig } from '@/constant/config';
 import { EnvelopeIcon, DocumentCheckIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
 
-export default function Email() {
+// Started from https://docs.zk.email/zk-email-sdk/setup
+export default function VerifyEmail() {
   const [proof, setProof] = useState<Proof | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [verification, setVerification] = useState<any>(null);
 

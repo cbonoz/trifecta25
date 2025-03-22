@@ -103,7 +103,7 @@ export default function ManagePage() {
                     className='flex items-center text-gray-600 hover:text-primary-600 text-sm'
                   >
                     <EnvelopeIcon className='h-5 w-5 mr-1' />
-                    Email Verifier
+                    Email
                   </button>
 
                   <ButtonLink href={`/verify/${attestation.id}`} variant='light'>
@@ -128,12 +128,21 @@ export default function ManagePage() {
           <Dialog.Panel className="mx-auto max-w-2xl rounded bg-white p-6 shadow-xl w-full">
             <div className="flex justify-between items-center mb-4">
               <Dialog.Title className="text-lg font-medium">Email Content</Dialog.Title>
+              <span className="text-sm text-gray-500">
+                {selectedAttestation ? selectedAttestation.title : ''}
+              </span>
               <button
                 onClick={() => setEmailModalOpen(false)}
                 className="text-gray-500 hover:text-gray-700"
               >
                 <XMarkIcon className="h-5 w-5" />
               </button>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 mb-2">
+                Copy the subject and body below to share the attestation via email. For authenticity,
+                ensure the email is sent from a business email domain.
+              </p>
             </div>
 
             {selectedAttestation && (

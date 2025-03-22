@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { DocumentCheckIcon, ShieldCheckIcon, LockClosedIcon } from '@heroicons/react/24/outline';
+import { DocumentCheckIcon, ShieldCheckIcon, LockClosedIcon, ExternalLinkIcon } from '@heroicons/react/24/outline';
 import { useEthersSigner } from '@/app/contexts/useEthersSigner';
 import { siteConfig } from '@/constant/config';
 import { getAttestationDetails, validateAttestation } from '@/lib/methodCalls';
@@ -14,7 +14,9 @@ export default function VerifyPageContent() {
   const [proof, setProof] = useState('');
   const [attestation, setAttestation] = useState<Attestation | null>(null);
   const [isVerified, setIsVerified] = useState(false);
-  const [loading, setLoading] = useState(false);
+  // Separate loading states
+  const [fetchLoading, setFetchLoading] = useState(true); // Loading state for fetching attestation
+  const [verifyLoading, setVerifyLoading] = useState(false); // Loading state for proof verification
   const [error, setError] = useState<string | null>(null);
   const [verificationTime, setVerificationTime] = useState<Date | null>(null);
   const signer = useEthersSigner({ chainId: siteConfig.defaultChain.id });
@@ -25,6 +27,7 @@ export default function VerifyPageContent() {
         return;
       }
 
+      setFetchLoading(true);
       try {
         const details = await getAttestationDetails(signer, attestationId as string);
         setAttestation(details);
@@ -32,7 +35,7 @@ export default function VerifyPageContent() {
         setError('Failed to load attestation details');
         console.error(error);
       } finally {
-        setLoading(false);
+        setFetchLoading(false);
       }
     };
 
@@ -43,13 +46,13 @@ export default function VerifyPageContent() {
     e.preventDefault();
     if (!proof || !attestation || !signer || !attestationId) return;
 
-    setLoading(true);
+    setVerifyLoading(true); // Use verification-specific loading state
     setError(null);
     try {
       const isValid = await validateAttestation(signer, attestationId as string, proof);
       if (isValid) {
         setIsVerified(true);
-        setVerificationTime(new Date()); // Set the current time as verification timestamp
+        setVerificationTime(new Date());
       } else {
         setError('Invalid proof provided');
       }
@@ -57,10 +60,10 @@ export default function VerifyPageContent() {
       console.error('Verification failed:', error);
       setError(error.message || 'Verification failed');
     }
-    setLoading(false);
+    setVerifyLoading(false);
   };
 
-  if (loading) {
+  if (fetchLoading) {
     return (
       <div className='container mx-auto px-4 py-8 text-center'>
         <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto'></div>
@@ -78,7 +81,7 @@ export default function VerifyPageContent() {
     );
   }
 
-  if (!attestation && !loading) {
+  if (!attestation && !fetchLoading) {
     return (
       <div className='container mx-auto px-4 py-8 text-center'>
         <h2 className='text-xl font-bold text-red-600'>Attestation not found</h2>
@@ -104,6 +107,8 @@ export default function VerifyPageContent() {
         </div>
 
         <div className='bg-white shadow rounded-lg p-6 space-y-6'>
+
+
           {/* Attestation Details */}
           <div>
             <h2 className='text-lg font-semibold mb-4'>Attestation Details</h2>
@@ -175,18 +180,19 @@ export default function VerifyPageContent() {
                     onChange={(e) => setProof(e.target.value)}
                     placeholder="Enter the proof provided by the attestation owner"
                     required
+                    disabled={verifyLoading} // Disable during verification
                   />
                 </label>
 
                 <button
                   type='submit'
-                  disabled={loading}
+                  disabled={verifyLoading}
                   className='w-full flex justify-center items-center bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 disabled:opacity-50'
                 >
-                  {loading ? (
+                  {verifyLoading ? (
                     <>
                       <div className='animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2' />
-                      Verifying...
+                      Verifying Proof...
                     </>
                   ) : (
                     'Verify'
@@ -199,7 +205,23 @@ export default function VerifyPageContent() {
               </div>
             </form>
           )}
+
+          {/* Add verification result info */}
+          {isVerified && (
+            <div className='text-sm text-gray-600 mt-2 text-center'>
+              <p>This verification has been recorded on the blockchain.</p>
+              <p className='text-xs mt-1'>Transaction will be visible on the contract in a few minutes.</p>
+            </div>
+          )}
         </div>
+
+            {/* Contract Link - New section */}
+            <div className='text-right'>
+            <AddressLink
+              address={siteConfig.contractAddress}
+              chars={6}
+              className='text-sm text-primary-600 hover:text-primary-800'/>
+          </div>
       </div>
     </div>
   );

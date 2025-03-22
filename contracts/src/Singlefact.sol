@@ -39,6 +39,7 @@ contract Singlefact {
     );
     event AttestationDeactivated(bytes32 indexed id);
     event ProofValidated(bytes32 indexed attestationId, address indexed verifier, bool isValid);
+    event ProofVerified(bytes32 indexed attestationId, address indexed verifier, bool isValid, uint256 timestamp);
 
     function createAttestation(
         bytes32 attestationId,  // Pre-generated unique hash
@@ -124,8 +125,7 @@ contract Singlefact {
 
     function validateProof(bytes32 attestationId, string memory providedProof)
         external
-        view
-        returns (bool)
+        returns (bool) // Changed from view to write
     {
         Attestation memory attestation = attestations[attestationId];
         require(attestation.active, "Attestation not active");
@@ -134,6 +134,11 @@ contract Singlefact {
         bytes32 storedHash = keccak256(abi.encodePacked(attestation.proof));
         bytes32 providedHash = keccak256(abi.encodePacked(providedProof));
 
-        return storedHash == providedHash;
+        bool isValid = (storedHash == providedHash);
+
+        // Emit verification event
+        emit ProofVerified(attestationId, msg.sender, isValid, block.timestamp);
+
+        return isValid;
     }
 }
