@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { DocumentCheckIcon, ShieldCheckIcon, LockClosedIcon, ExternalLinkIcon } from '@heroicons/react/24/outline';
+import { ShieldCheckIcon, LockClosedIcon } from '@heroicons/react/24/outline';
 import { useEthersSigner } from '@/app/contexts/useEthersSigner';
 import { siteConfig } from '@/constant/config';
 import { getAttestationDetails, validateAttestation } from '@/lib/methodCalls';
