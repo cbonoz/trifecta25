@@ -29,6 +29,8 @@ What Singlefact offers:
 
 These scenarios expose more personal data than necessary, creating security risks. We saw an opportunity to solve this with zero-knowledge proofs and blockchain technology.
 
+More about zk proofs <a href="https://docs.succinct.xyz/docs/network/eli5" target="_blank">here</a>.
+
 ## What it does
 
 Singlefact is a decentralized attestation platform that allows organizations to:
@@ -87,11 +89,19 @@ ZkEmail: Authenticity of generated emails is important when working with persona
 
 Registry entry here: https://registry.zk.email/60b8c051-cbcc-4a70-a92d-ae55fb8cc1cf
 
-## Potential next steps
+## Potential future work
 
 1. Use the MVP – A simple API + Web UI for zk-proof generation.
 2. Talk to potential customers in fintech, HR, and Web3.
 3. Offer trials and free use to gauge demand.
+
+### Running the project
+
+<pre>
+cp .env.example .env
+yarn
+yarn dev
+</pre>
 
 ### Doing a Singlefact production deployment
 

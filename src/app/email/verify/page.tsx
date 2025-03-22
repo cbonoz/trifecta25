@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import zkeSDK, { Proof } from "@zk-email/sdk"
+import zkeSDK, { Blueprint, Proof } from "@zk-email/sdk"
 import { siteConfig } from '@/constant/config';
 import { EnvelopeIcon, DocumentCheckIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
 
@@ -13,6 +13,7 @@ export default function VerifyEmail() {
   const [verification, setVerification] = useState<any>(null);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
     const file = event.target.files?.[0]
     if (!file) {
       setError("Error detecting file, please try again.");
@@ -24,16 +25,19 @@ export default function VerifyEmail() {
     setProof(null);
     setVerification(null);
 
+    const blueprintKey = siteConfig.zkBlueprint as any;
+
     try {
       const eml = await file.text()
       const sdk = zkeSDK()
-      const blueprint = await sdk.getBlueprint(siteConfig.zkBlueprint);
+      const blueprint = await sdk.getBlueprint(blueprintKey);
       const prover = blueprint.createProver()
       const newProof = await prover.generateProof(eml);
       setProof(newProof);
 
       const verificationResult = await blueprint.verifyProofOnChain(newProof);
       setVerification(verificationResult);
+      console.log('Verified proof', blueprintKey, newProof, verificationResult);
     } catch (error: any) {
       setError(error.message || "Error generating proof" + ". See console logs for more details.");
       console.error("Error:", error);
