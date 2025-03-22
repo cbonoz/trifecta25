@@ -14,7 +14,10 @@ export default function VerifyEmail() {
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
-    if (!file) return
+    if (!file) {
+      setError("Error detecting file, please try again.");
+      return;
+    }
 
     setLoading(true);
     setError(null);
@@ -32,7 +35,7 @@ export default function VerifyEmail() {
       const verificationResult = await blueprint.verifyProofOnChain(newProof);
       setVerification(verificationResult);
     } catch (error: any) {
-      setError(error.message || "Error generating proof");
+      setError(error.message || "Error generating proof" + ". See console logs for more details.");
       console.error("Error:", error);
     } finally {
       setLoading(false);
