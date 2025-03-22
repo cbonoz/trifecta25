@@ -33,7 +33,7 @@ export default function AboutPage() {
 
           {/* Contract Info */}
           <div className='mb-12 text-left bg-white rounded-lg shadow-lg p-8'>
-            <h2 className='text-2xl font-semibold mb-4'>Smart Contract</h2>
+            <h2 className='text-2xl font-semibold mb-4'>Main Contract</h2>
             <p className='text-gray-600 mb-2'>
               Deployed on {siteConfig.defaultChain.name} at:
             </p>
@@ -57,6 +57,14 @@ export default function AboutPage() {
               <li>On-chain verification records</li>
               <li>Decentralized authority management</li>
             </ul>
+
+            {/* Disclaimer - more discrete version */}
+            <div className='mt-6 border-t pt-4 text-sm'>
+              <p className='text-gray-500 italic'>
+                <span className='font-medium'>Note:</span> This application was developed as a
+                hackathon prototype and is provided as-is. Use or trial at your own discretion.
+              </p>
+            </div>
           </div>
 
           {/* Use Cases */}

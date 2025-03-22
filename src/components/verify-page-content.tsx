@@ -113,10 +113,10 @@ export default function VerifyPageContent() {
           <div>
             <h2 className='text-lg font-semibold mb-4'>Attestation Details</h2>
             <dl className='grid grid-cols-1 gap-3'>
-              <div>
+              {attestation.active && <div>
                 <dt className='text-sm font-medium text-gray-500'>Title</dt>
                 <dd className='text-sm text-gray-900'>{attestation.title}</dd>
-              </div>
+              </div>}
               {/* <div>
                 <dt className='text-sm font-medium text-gray-500'>Description</dt>
                 <dd className='text-sm text-gray-900'>{attestation.description}</dd>
@@ -163,7 +163,7 @@ export default function VerifyPageContent() {
             ) : (
               <div className='bg-gray-50 p-4 rounded-md flex items-center justify-center gap-2'>
                 <LockClosedIcon className='h-5 w-5 text-gray-400' />
-                <p className='text-gray-500'>Verify proof to reveal statement</p>
+                <p className='text-gray-500'>{attestation.active ? 'Verify proof to reveal statement' : 'This record is inactive'}</p>
               </div>
             )}
           </div>

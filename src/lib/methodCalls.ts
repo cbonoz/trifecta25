@@ -144,3 +144,18 @@ export const validateAttestation = async (
     return false;
   }
 };
+
+export const deactivateAttestation = async (
+  signer: any,
+  attestationId: string
+): Promise<boolean> => {
+  const contract = new ethers.Contract(siteConfig.contractAddress, SinglefactAbi, signer);
+  try {
+    const tx = await contract.deactivateAttestation(attestationId);
+    await tx.wait();
+    return true;
+  } catch (error) {
+    console.error('Error deactivating attestation:', error);
+    return false;
+  }
+};

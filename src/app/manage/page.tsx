@@ -4,11 +4,12 @@ import ButtonLink from '@/components/links/ButtonLink';
 import { DocumentIcon, EnvelopeIcon, PlusIcon, ClipboardIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useEffect, useState } from 'react';
 import { Attestation } from '@/lib/types';
-import { getAttestations } from '@/lib/methodCalls';
+import { getAttestations, deactivateAttestation } from '@/lib/methodCalls';
 import { useEthersSigner } from '@/app/contexts/useEthersSigner';
 import { siteConfig } from '@/constant/config';
 import { Dialog } from '@headlessui/react';
 import { generateAttestationEmailContent } from '@/util';
+import { Tooltip } from '@/components/Tooltip';
 
 export default function ManagePage() {
   const { address } = useAccount();
@@ -18,6 +19,7 @@ export default function ManagePage() {
   const [selectedAttestation, setSelectedAttestation] = useState<Attestation | null>(null);
   const [emailModalOpen, setEmailModalOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [deactivating, setDeactivating] = useState<string | null>(null);
 
   useEffect(() => {
     const loadAttestations = async () => {
@@ -47,6 +49,27 @@ export default function ManagePage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleDeactivate = async (attestationId: string) => {
+    if (!signer) return;
+
+    setDeactivating(attestationId);
+    try {
+      const success = await deactivateAttestation(signer, attestationId);
+      if (success) {
+        // Update the local state without refetching
+        setAttestations(prevAttestations =>
+          prevAttestations.map(att =>
+            att.id === attestationId ? { ...att, active: false } : att
+          )
+        );
+      }
+    } catch (error) {
+      console.error('Failed to deactivate attestation:', error);
+    } finally {
+      setDeactivating(null);
+    }
+  };
+
   if (!address) {
     return (
       <div className='flex min-h-screen flex-col items-center justify-center'>
@@ -74,15 +97,36 @@ export default function ManagePage() {
           <p className='mt-1 text-sm text-gray-500'>
             Get started by creating a new attestation.
           </p>
+          <p className='mt-3 text-sm text-gray-500'>
+            Learn more about this project on the <a href="/about" className='text-primary-600 hover:text-primary-800 underline'>About page</a>.
+          </p>
         </div>
       ) : (
         <div className='grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
           {attestations.map((attestation) => (
             <div
               key={attestation.id}
-              className='border rounded-lg p-4 hover:shadow-md transition-shadow'
+              className='border rounded-lg p-4 hover:shadow-md transition-shadow relative'
             >
-              <h3 className='font-semibold mb-2'>{attestation.title}</h3>
+              {/* Add deactivate button in top-right */}
+              {attestation.active && (
+                <button
+                  onClick={() => handleDeactivate(attestation.id)}
+                  disabled={deactivating === attestation.id}
+                  className='absolute top-3 right-3 text-gray-400 hover:text-red-500 transition-colors'
+                  title='Deactivate attestation'
+                >
+                  {deactivating === attestation.id ? (
+                    <div className='h-5 w-5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin'></div>
+                  ) : (
+                    <Tooltip content='Deactivate attestation page'>
+                      <XMarkIcon className='h-5 w-5' />
+                    </Tooltip>
+                  )}
+                </button>
+              )}
+
+              <h3 className='font-semibold mb-2 pr-6'>{attestation.title}</h3>
               <p className='text-sm text-gray-600 mb-2'>{attestation.description}</p>
               <p className='text-sm text-gray-600 mb-2 truncate'>
                 Statement: {attestation.statement}
@@ -98,13 +142,15 @@ export default function ManagePage() {
                 </span>
 
                 <div className='flex space-x-2'>
-                  <button
-                    onClick={() => handleShareViaEmail(attestation)}
-                    className='flex items-center text-gray-600 hover:text-primary-600 text-sm'
-                  >
-                    <EnvelopeIcon className='h-5 w-5 mr-1' />
-                    Email
-                  </button>
+                  {attestation.active && (
+                    <button
+                      onClick={() => handleShareViaEmail(attestation)}
+                      className='flex items-center text-gray-600 hover:text-primary-600 text-sm'
+                    >
+                      <EnvelopeIcon className='h-5 w-5 mr-1' />
+                      Email
+                    </button>
+                  )}
 
                   <ButtonLink href={`/verify/${attestation.id}`} variant='light'>
                     View
