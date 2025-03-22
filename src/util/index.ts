@@ -59,9 +59,8 @@ export const generateAttestationEmailContent = (
     subject: `[${siteConfig.title}] Data verification: ${attestation.title}`,
     body: `Hello,
 
-I'd like to share an attestation with you that requires verification:
+I'd like to share an data attestation for ${attestation.title} with you that you can verify:
 
-Title: ${attestation.title}
 Attestation ID: ${attestation.id}
 
 To verify this attestation, please visit:
@@ -82,9 +81,8 @@ export const openEmailClient = (attestation: any, baseUrl: string) => {
   const emailBody = `
 Hello,
 
-I'd like to share an attestation with you that requires verification:
+I'd like to share an data attestation for ${attestation.title} with you that you can verify:
 
-Title: ${attestation.title}
 Attestation ID: ${attestation.id}
 
 To verify this attestation, please visit:
