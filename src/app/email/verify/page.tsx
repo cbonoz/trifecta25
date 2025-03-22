@@ -8,7 +8,7 @@ import { EnvelopeIcon, DocumentCheckIcon, ExclamationCircleIcon } from '@heroico
 // Started from https://docs.zk.email/zk-email-sdk/setup
 export default function VerifyEmail() {
   const [proof, setProof] = useState<Proof | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [verification, setVerification] = useState<any>(null);
 

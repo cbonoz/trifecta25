@@ -32,7 +32,7 @@ export default function VerifyPageContent() {
         const details = await getAttestationDetails(signer, attestationId as string);
         setAttestation(details);
       } catch (error: any) {
-        setError('Failed to load attestation details');
+        setError('Failed to load attestation details. Details may not exist or the attestation ID may not be correct.');
         console.error(error);
       } finally {
         setFetchLoading(false);
