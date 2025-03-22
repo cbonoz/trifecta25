@@ -57,6 +57,10 @@ Via Remix or shell
 $ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
 ```
 
+The following should be added to the remappings file:
+`@sp1-contracts/=lib/sp1-contracts/contracts/src/`
+
+
 ### Cast
 
 ```shell

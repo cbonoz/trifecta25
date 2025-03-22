@@ -78,7 +78,14 @@ $499/mo: Enterprise plan.
 
 ## Technologies used
 
+Sepolia: A deployed smart contract Singlefact.sol manages the state of the app and the generated attestations.
+Succinct:  Singlefact uses the EVM-compatible onchain verification with the Sepolia gateway to do the on chain proofs of the validated emails. The EVM-compatibility of Succinct made it possible for a contract to be able to manage both the full state of the app (and app methods such as generating and querying attestations) while not requiring a separate datasource for proofs and verification.
 
+ZkEmail: Authenticity of generated emails is important when working with personal information and validations. Singlefact uses a defined email template that can be regex'd by a custom registry.
+
+Registry here:
+
+This 
 
 ## Potential next steps
 

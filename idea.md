@@ -44,7 +44,7 @@ Number of uploaded records.
 ### Sponsors used
 
 * ZK Email: Verify an email comes from an authorized app user
-* Aleo: Create a private dapp as the backing of the contract
+* Succinct
 
 * SP1: https://docs.succinct.xyz/
 Qualification Requirements

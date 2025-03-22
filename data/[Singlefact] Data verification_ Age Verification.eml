@@ -1,0 +1,116 @@
+Delivered-To: chrisdistrict@gmail.com
+Received: by 2002:a05:6a10:d608:b0:5ec:e82c:5658 with SMTP id gm8csp946033pxb;
+        Fri, 21 Mar 2025 21:04:11 -0700 (PDT)
+X-Received: by 2002:a05:600c:83c7:b0:43c:fc0c:7f33 with SMTP id 5b1f17b1804b1-43d509e4a78mr57618665e9.2.1742616251357;
+        Fri, 21 Mar 2025 21:04:11 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1742616251; cv=none;
+        d=google.com; s=arc-20240605;
+        b=FNaO487wPNtfQpbTETZYzFHYx8BjSoI4daRJdWxGgRzCiOFbxc5MXYacTdJxCoZ+uM
+         3p9cmBpRGiNKNkdJhCcSaoH2bQTRSPm50p97L73YZNO7RlRkjMVRPehS5nOXSME0EQis
+         Z95qyBRoXONiXWjQL+LCWr7XoLQ/8QjEznX6KBiwcitm/wO2psXexbt1PoPXs0QdwmrU
+         6buH7uFy9B8yqbZI7lcco5/MiZwUPTBBCp+i6eaotq55qEbKowQM/41CO7X+0+qs1Y7G
+         /tCYi93YQgK7BDd7bLEfys1DxzQHeUKo7y+CmDgOpc/mMMPcFuDInPwUIcRoioUpyInn
+         BL2A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=to:subject:message-id:date:from:mime-version:dkim-signature;
+        bh=zhgwRpUXKWTECmhERyu/+wm+W4a+LmCXeeWdePjFO7g=;
+        fh=Sw/BDrqi31hxmUmgH1I2LkgYaq8i9spq5pRDF9gLWyA=;
+        b=VVpngwWZkTr33E8Pa6fwfANmYYvNIu0BqI3UyFlv6j8mL2SXIxfYJjDedIFzbqVWR4
+         yUJzQZWrnt68oTUYeYsQAbaZRhy4WuKn/2QhFzdqG5aoddZnxEexx7xW/0DBYujN3RMy
+         /wxrPl6JzHkpKP5q/QC+cWv7Lkxw8qQZOezVocsEm6yzkspP6pIdhtgpGvH7hSyzD701
+         hzjKMSq3uGRlMZLncKwpEPLcTjJi9jBy3vSNh0C7NqjXYILDhfq9I1rdwoG4/NuoqqPD
+         9j3kqdnkot6J1xbrEqnQ3XQBbYy3O8KI+5UdjcJLRHmiay9ForoCgBv5P53ZIHCLtJMZ
+         QYTQ==;
+        dara=google.com
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@gmail.com header.s=20230601 header.b="Mj/kJv5N";
+       spf=pass (google.com: domain of blackshoalgroup@gmail.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=blackshoalgroup@gmail.com;
+       dmarc=pass (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com;
+       dara=pass header.i=@gmail.com
+Return-Path: <blackshoalgroup@gmail.com>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id 5b1f17b1804b1-43d4fc7e302sor15710795e9.1.2025.03.21.21.04.11
+        for <chrisdistrict@gmail.com>
+        (Google Transport Security);
+        Fri, 21 Mar 2025 21:04:11 -0700 (PDT)
+Received-SPF: pass (google.com: domain of blackshoalgroup@gmail.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@gmail.com header.s=20230601 header.b="Mj/kJv5N";
+       spf=pass (google.com: domain of blackshoalgroup@gmail.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=blackshoalgroup@gmail.com;
+       dmarc=pass (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com;
+       dara=pass header.i=@gmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1742616250; x=1743221050; dara=google.com;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=zhgwRpUXKWTECmhERyu/+wm+W4a+LmCXeeWdePjFO7g=;
+        b=Mj/kJv5NFbRf2/5E0kwX3mfKgtZJf4cqbHOaoDQJnxokGPC4WS0FQ9rm6VNpuSgSVn
+         rskDDwsB3P9TbdEsjKHyxxdRBe+Vt1de+MWzJoJVU0zL+cess2DKxxuYRHeM6wf1UIa5
+         ycklQGhPM4KN9wsBmnM5aZxjAYWLxKchJ7VdMNywBxz4jaqiLbYP/CnX/Fz8SzpZ7Io7
+         TDQs6QOPTGNk7k0bK6xQ5u0W0aXo0c5M6kJaE2GbQn4t96kPGatrgLMle8BuSdDioL7T
+         f2XmXhCPGfDAg3lcIehJ47lebpB7+HCgNRZ56AuhuB8vOOhCjZO/GMV/jmZBlNUInILl
+         qxHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742616250; x=1743221050;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zhgwRpUXKWTECmhERyu/+wm+W4a+LmCXeeWdePjFO7g=;
+        b=Ot2KXIy/9mv3YAv9zg/h8AZFuekSKAq53coqa2IvcyR+OSWKSJcADHPiJecZF072S+
+         PWlUQvUR9AEpwhJ/DuYPMIgHSkuBxKebTuUCBFMjxk6TUv2XeBysHgLXk++b52VtSN8N
+         i9MU27lBwtHR5qXW7LmX1pro9q6qeZPk3N1/eNrfjP4lTIVGD22SFMJwnWfje1lnGLX/
+         u7mq8gcd44bZVB4mMuqe1iF/Xf4XhLttkTE9vs/1EzE8RZ0c8Um0Bqx5/I8/blo14PEa
+         xglwESR7nhgmpm7QLVGCOl0w/xqMBhGsjN6xvF2MzwFQOLKnx+H7vZSBtIMSsX2vfPED
+         Euig==
+X-Gm-Message-State: AOJu0YwUaihpm3Yzwf46lsnVEZeIVU4Q0fTBK//68rKWYxIRFmwvWJY6
+	OOqnY751FyvU/d/7FGn4KcksbV/elkm4ACHMI+pq9XZl7s3MDlvhFybDqzf+WGHZKuJLXiWApx5
+	FZZ/6gJPoqROMlnfkwJp9OkYXDpxQ6xDf
+X-Gm-Gg: ASbGnctl9PgVkwzdzluoLuHjinMYSwXr2W8VQLyBhBIltl1RmX1c7FIwQfhfG2fB4/U
+	hQIhR3zcrMhr6JKGi8koe6ZdkDMygas+yF8F11tUgVwHDvqUKK4U9iyV5ZJFDWKQ5ErQSro64ot
+	7pud8/nJi1S2GtWb0v1sEV9VwP
+X-Google-Smtp-Source: AGHT+IFmrc19R/r8zwu9lm7Qbbzi7j2PYg0r2owmEh0towE5E1/R9zXjY32tfq0Lg5Z6mzsLGW2pKEA8i+V/vcOqgbM=
+X-Received: by 2002:a05:6000:188f:b0:38f:3245:21fc with SMTP id
+ ffacd0b85a97d-3997f9404f0mr4795357f8f.50.1742616250046; Fri, 21 Mar 2025
+ 21:04:10 -0700 (PDT)
+MIME-Version: 1.0
+From: Chris Buonocore <blackshoalgroup@gmail.com>
+Date: Sat, 22 Mar 2025 00:03:59 -0400
+X-Gm-Features: AQ5f1JpxCa0madcufA8_4NCM0QofylS3xsBQ4ESQU2WjaXSnrHWS-8tAVO96Zio
+Message-ID: <CAHWNYj0t1AZ-6XCu2rmhhcXocmSC0rus91WC8N24xGcH=fPSBA@mail.gmail.com>
+Subject: [Singlefact] Data verification: Age Verification
+To: Chris Buonocore <chrisdistrict@gmail.com>
+Content-Type: multipart/alternative; boundary="0000000000009061c40630e67668"
+
+--0000000000009061c40630e67668
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+I'd like to share an attestation with you that requires verification:
+
+Title: Age Verification
+Attestation ID:
+0x09e6d0e50195b938789fb82443b29ac91c2c5711bf0bb2e0c6e2a555fc2b65fb
+
+To verify this attestation, please visit:
+http://localhost:3000/verify/0x09e6d0e50195b938789fb82443b29ac91c2c5711bf0bb2e0c6e2a555fc2b65fb
+
+You'll need the following proof code during verification:
+ZK-SNARK-AbC123XyZ_DEMO_PROOF-This-would-be-a-long-base64-encoded-zk-proof-string-in-production
+
+Thank you,
+
+--0000000000009061c40630e67668
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Hello,<br><br>I&#39;d like to share an attestation with yo=
+u that requires verification:<br><br>Title: Age Verification<br>Attestation=
+ ID: 0x09e6d0e50195b938789fb82443b29ac91c2c5711bf0bb2e0c6e2a555fc2b65fb<br>=
+<br>To verify this attestation, please visit:<br><a href=3D"http://localhos=
+t:3000/verify/0x09e6d0e50195b938789fb82443b29ac91c2c5711bf0bb2e0c6e2a555fc2=
+b65fb">http://localhost:3000/verify/0x09e6d0e50195b938789fb82443b29ac91c2c5=
+711bf0bb2e0c6e2a555fc2b65fb</a><br><br>You&#39;ll need the following proof =
+code during verification:<br>ZK-SNARK-AbC123XyZ_DEMO_PROOF-This-would-be-a-=
+long-base64-encoded-zk-proof-string-in-production<br><br>Thank you,</div>
+
+--0000000000009061c40630e67668--

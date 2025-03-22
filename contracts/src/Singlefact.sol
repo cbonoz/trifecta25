@@ -1,7 +1,19 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.20;
 
+// https://docs.succinct.xyz/docs/sp1/verification/onchain/contract-addresses
+// Sepolia gateway: 0x3B6041173B80E77f038f3F2C0f9744f04837185e
+
+import {ISP1Verifier} from "@sp1-contracts/ISP1Verifier.sol";
+
 contract Singlefact {
+
+    address public verifier;
+
+    constructor() {
+        verifier = 0x3B6041173B80E77f038f3F2C0f9744f04837185e; // Set the verifier address
+    }
+
     struct Attestation {
         bytes32 id;
         address owner;
@@ -98,6 +110,16 @@ contract Singlefact {
             attestation.active,
             attestation.timestamp
         );
+    }
+
+     function verifyAppProof(bytes calldata _publicValues, bytes calldata _proofBytes, bytes32 _programVKey)
+        public
+        view
+        returns (uint32, uint32, uint32)
+    {
+        ISP1Verifier(verifier).verifyProof(_programVKey, _publicValues, _proofBytes);
+        (uint32 n, uint32 a, uint32 b) = abi.decode(_publicValues, (uint32, uint32, uint32));
+        return (n, a, b);
     }
 
     function validateProof(bytes32 attestationId, string memory providedProof)
