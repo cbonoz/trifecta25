@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSinglefact } from '@/hooks/useSinglefact';
 import { useAccount } from 'wagmi';
+import { DocumentCheckIcon } from '@heroicons/react/24/outline';
 
 export default function UploadPageContent() {
   const router = useRouter();
@@ -10,9 +11,10 @@ export default function UploadPageContent() {
   const { createAttestation } = useSinglefact();
   const [formData, setFormData] = useState({
     attestationType: '',
-    document: null as File | null,
+    file: null as File | null,
   });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   if (!address) {
     return (
@@ -25,18 +27,20 @@ export default function UploadPageContent() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
+
     try {
-      // TODO: Generate ZK proof from document
-      const zkProof = '0x...';
-      const functionId = '0x...';
-      const dataHash = '0x...';
+      if (!formData.file) throw new Error('No file selected');
 
       await createAttestation({
-        args: [formData.attestationType, dataHash, functionId, zkProof],
+        attestationType: formData.attestationType,
+        file: formData.file,
       });
+
       router.push('/manage');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating attestation:', error);
+      setError(error.message || 'Error creating attestation');
     }
     setLoading(false);
   };
@@ -66,7 +70,7 @@ export default function UploadPageContent() {
               type='file'
               className='mt-1 block w-full'
               onChange={(e) =>
-                setFormData({ ...formData, document: e.target.files?.[0] || null })
+                setFormData({ ...formData, file: e.target.files?.[0] || null })
               }
               required
             />
@@ -79,6 +83,7 @@ export default function UploadPageContent() {
         >
           {loading ? 'Creating...' : 'Create Attestation'}
         </button>
+        {error && <p className='text-red-500 mt-4'>{error}</p>}
       </form>
     </div>
   );

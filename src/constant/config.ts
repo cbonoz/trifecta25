@@ -1,3 +1,4 @@
+import { requireEnv } from '@/util';
 import { baseSepolia, sepolia } from 'wagmi/chains';
 
 export const siteConfig = {
@@ -10,7 +11,8 @@ export const siteConfig = {
   description:
     'Singlefact provides a privacy-preserving ZK attestation management system, enabling businesses to validate identities and credentials without exposing sensitive data.',
   url: 'https://www.github.com/cbonoz/trifecta25',
-  contractAddress: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS ?? '0x0',
+  contractAddress: requireEnv(process.env.NEXT_PUBLIC_CONTRACT_ADDRESS, 'NEXT_PUBLIC_CONTRACT_ADDRESS'),
+  zkBlueprint: requireEnv(process.env.NEXT_PUBLIC_ZK_BLUEPRINT, 'NEXT_PUBLIC_ZK_BLUEPRINT'),
   icons: {
     icon: '/favicon/favicon.ico',
     shortcut: '/favicon/favicon-16x16.png',

@@ -1,12 +1,49 @@
 'use client';
-import { useAccount } from 'wagmi';
+import { useAccount, useReadContract } from 'wagmi';
 import { useSinglefact } from '@/hooks/useSinglefact';
 import ButtonLink from '@/components/links/ButtonLink';
 import { DocumentIcon, PlusIcon } from '@heroicons/react/24/outline';
+import SinglefactABI from '@/contracts/Singlefact.json';
+import { siteConfig } from '@/constant/config';
+import { useEffect, useState } from 'react';
+
+type AttestationDetails = {
+  authority: string;
+  attestationType: string;
+  dataHash: string;
+  timestamp: number;
+  active: boolean;
+};
 
 export default function ManagePage() {
   const { address } = useAccount();
   const { attestations, loadingAttestations } = useSinglefact();
+  const [attestationDetails, setAttestationDetails] = useState<Record<string, AttestationDetails>>({});
+
+  const { data: details } = useReadContract({
+    address: siteConfig.contractAddress as `0x${string}`,
+    abi: SinglefactABI.abi,
+    functionName: 'getAttestationDetails',
+    args: [attestations?.[0]],
+    enabled: Boolean(attestations?.length),
+  });
+
+  useEffect(() => {
+    const fetchDetails = async () => {
+      if (!attestations?.length) return;
+
+      const details: Record<string, AttestationDetails> = {};
+      for (const id of attestations) {
+        const result = await fetch(`/api/attestations/${id}`); // You'll need to create this API endpoint
+        if (result.ok) {
+          details[id] = await result.json();
+        }
+      }
+      setAttestationDetails(details);
+    };
+
+    fetchDetails();
+  }, [attestations]);
 
   if (!address) {
     return (
@@ -38,19 +75,33 @@ export default function ManagePage() {
         </div>
       ) : (
         <div className='grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
-          {attestations?.map((attestationId: string) => (
-            <div
-              key={attestationId}
-              className='border rounded-lg p-4 hover:shadow-md transition-shadow'
-            >
-              <h3 className='font-semibold truncate'>{attestationId}</h3>
-              <div className='mt-2 flex justify-end'>
-                <ButtonLink href={`/verify/${attestationId}`} variant='light'>
-                  View Details
-                </ButtonLink>
+          {attestations?.map((attestationId: string) => {
+            const details = attestationDetails[attestationId];
+            return (
+              <div
+                key={attestationId}
+                className='border rounded-lg p-4 hover:shadow-md transition-shadow'
+              >
+                <h3 className='font-semibold mb-2'>{details?.attestationType || 'Loading...'}</h3>
+                <p className='text-sm text-gray-600 mb-2'>
+                  Created: {details?.timestamp ? new Date(details.timestamp * 1000).toLocaleString() : 'Loading...'}
+                </p>
+                <p className='text-sm text-gray-600 mb-4 truncate'>
+                  Hash: {details?.dataHash || 'Loading...'}
+                </p>
+                <div className='flex justify-between items-center'>
+                  <span className={`px-2 py-1 rounded-full text-xs ${
+                    details?.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                  }`}>
+                    {details?.active ? 'Active' : 'Inactive'}
+                  </span>
+                  <ButtonLink href={`/verify/${attestationId}`} variant='light'>
+                    View Details
+                  </ButtonLink>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

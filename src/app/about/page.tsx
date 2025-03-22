@@ -4,28 +4,22 @@ import { siteConfig } from '@/constant/config';
 export default function AboutPage() {
   const integrations = [
     {
-      name: 'Coinbase Developer Platform',
-      description: 'SmartWallets, Agentkit, OnchainKit, Coinbase SDK',
+      name: 'ZK Email Integration',
+      description: 'Secure email-based document verification',
       benefit:
-        'Custom prompt fed into deployment on Autonome with secure contract interactions.',
+        'Verify documents received via email without revealing contents using zero-knowledge proofs.',
     },
     {
-      name: 'Base',
-      description: 'Base blockchain and payments ecosystem',
+      name: 'Succinct',
+      description: 'Zero-knowledge proof generation and verification',
       benefit:
-        'Core blockchain infrastructure with deployed solidity smart contracts.',
+        'Enables privacy-preserving document verification without exposing sensitive data.',
     },
     {
-      name: 'Autonome',
-      description: 'AgentKit deployment and hosting platform',
+      name: 'Smart Contract System',
+      description: 'Decentralized attestation management',
       benefit:
-        'Streamlined deployment and management of AI-powered loyalty systems.',
-    },
-    {
-      name: 'Nethermind',
-      description: 'Commerce AI integrated with deployed Ethereum contract',
-      benefit:
-        'The AI agent is connected to the primary contract deployment and can perform an initial set of actions like checking rewards balance, redemptions, and asking questions about the store based on input provided by the owner.',
+        'Transparent, immutable record of attestations with built-in privacy controls.',
     },
   ];
 
@@ -34,14 +28,14 @@ export default function AboutPage() {
       <div className='max-w-7xl mx-auto'>
         <div className='text-center'>
           <h1 className='text-4xl font-bold text-gray-900 mb-8'>
-            About Singlefact
+            About {siteConfig.title}
           </h1>
 
           {/* Contract Info */}
           <div className='mb-12 text-left bg-white rounded-lg shadow-lg p-8'>
             <h2 className='text-2xl font-semibold mb-4'>Smart Contract</h2>
             <p className='text-gray-600 mb-2'>
-              Singlefact is deployed on {siteConfig.defaultChain.name} at:
+              Deployed on {siteConfig.defaultChain.name} at:
             </p>
             <AddressLink
               address={siteConfig.contractAddress}
@@ -53,21 +47,26 @@ export default function AboutPage() {
           {/* Project Overview */}
           <div className='mb-12 text-left bg-white rounded-lg shadow-lg p-8'>
             <h2 className='text-2xl font-semibold mb-4'>Project Overview</h2>
-            <p className='text-gray-600 mb-6'>
-              Singlefact is a Web3 QR code system that enables users to scan QR
-              codes at the point of attestation and get loyalty rewards attached to
-              their account.
-            </p>
+            <p className='text-gray-600 mb-6'>{siteConfig.description}</p>
 
             <h3 className='text-xl font-semibold mb-3'>Core Features:</h3>
             <ul className='list-disc list-inside text-gray-600 space-y-2 mb-6'>
-              <li>
-                Business QR code setup with configurable reward thresholds
-              </li>
-              <li>Custom attestation page tailored to your business prompt</li>
-              <li>
-                AI agent integration for transaction and loyalty management
-              </li>
+              <li>Privacy-preserving document verification</li>
+              <li>Zero-knowledge proof generation for sensitive data</li>
+              <li>Email-based document attestation</li>
+              <li>On-chain verification records</li>
+              <li>Decentralized authority management</li>
+            </ul>
+          </div>
+
+          {/* Use Cases */}
+          <div className='mb-12 text-left bg-white rounded-lg shadow-lg p-8'>
+            <h2 className='text-2xl font-semibold mb-4'>Common Use Cases</h2>
+            <ul className='list-disc list-inside text-gray-600 space-y-2'>
+              <li>Age verification without sharing full ID</li>
+              <li>Income verification without revealing bank statements</li>
+              <li>Educational credentials without exposing transcripts</li>
+              <li>Employment verification without sharing contracts</li>
             </ul>
           </div>
 

@@ -4,11 +4,11 @@
 
 # Singlefact
 
-A Zero-Knowledge Attestation Platform for Privacy-Preserving Document Verification.
+A SaaS Platform for Privacy-Preserving Document Verification.
 
 Built for Trifecta 2025.
 
-Video demo: https://youtu.be/Z2Tf2YFsfCs
+Video demo:
 
 Live Demo Url: https://singlefact.vercel.app (Sepolia)
 
@@ -20,13 +20,20 @@ We wanted to revolutionize how personal information is verified while maintainin
 - Confirming employment status without sharing sensitive payroll data
 - Validating education credentials without revealing full transcripts
 
+What Singlefact offers:
+
+1. Privacy-Preserving Verification – Businesses & individuals need ways to prove attributes (income, identity, ownership) without revealing full documents.
+2. Compliance & KYC Alternative – Financial institutions, HR, and Web3 platforms need privacy-preserving compliance solutions (e.g., proving accredited investor status without sharing bank statements).
+3. Web3 & Identity Integration – Decentralized apps (dApps) want on-chain proofs for things like DAO memberships, token-gated access, or voting eligibility.
+4. Enterprise Adoptability – Most companies don't want to manage zk-proof generation themselves (complex cryptography), making a plug-and-play API valuable.
+
 These scenarios expose more personal data than necessary, creating security risks. We saw an opportunity to solve this with zero-knowledge proofs and blockchain technology.
 
 ## What it does
 
 Singlefact is a decentralized attestation platform that allows organizations to:
 
-- Create and manage ZK attestation programs
+- Create and manage zero knowledge verifications without requiring ZK expertise.
 - Define specific verification requirements without accessing raw data
 - Track and verify attestations on-chain
 - Integrate with an AI-powered interface for attestation verification
@@ -39,11 +46,14 @@ Users can:
 
 ## How it Works
 
-### Document Registration and Issuance
-1. Organizations upload credential data (e.g., passports, bank statements, educational records)
-2. Data is digitally signed by the issuing authority
-3. Document hashes and signatures are stored on-chain for verification
-4. Original documents remain secure and private
+### Proof Registration and Issuance
+1. Organizations upload credential data (e.g., passports, bank statements, educational records).
+2. Data is digitally signed by the issuing authority.
+3. Document hashes and signatures are stored on-chain for verification (using Succinct).
+4. Original documents remain secure and private.
+5. Link to proof can be sent on the singlefact web app to the verifier. Verifier can log into and verify the validity of a statement with their connected wallet.
+6. Verifier or recipient user can prove they received a document via email without revealing its contents (using zkEmail).
+
 
 ### Zero-Knowledge Proof Generation
 Users can selectively prove facts like:
@@ -52,7 +62,7 @@ Users can selectively prove facts like:
 - Educational achievement without sharing full transcripts
 - Employment status without revealing salary details
 
-The ZK platform generates compact proofs that:
+Singlefact generates compact proofs that:
 - Confirm specific facts exist within source documents
 - Verify issuing authority signatures
 - Validate document authenticity
@@ -61,47 +71,31 @@ The ZK platform generates compact proofs that:
 ## Business Model
 
 - Usage-based pricing tied to number of attestations
-- Enterprise pricing for high-volume credential issuers
-- Optional enhanced privacy features for premium users
-- API access for third-party integrations
+- Example -
+Free tier: 10 proofs/month.
+$99/mo: 1,000 proofs.
+$499/mo: Enterprise plan.
 
 ## Technologies used
 
-1. <b>Coinbase Developer Platform</b>
-   - AgentKit: Powers the attestation verification experience
-   - OnchainKit: Manages attestation state and verification
-   - Coinbase SDK: Handles secure wallet connections
 
-2. <b>Base</b>
-   - Primary chain for attestation contract deployment
-   - Sepolia Contract: https://sepolia.basescan.org/address/0x2412FfB59ce049A5792773dFf493ba8583E5dF50
 
-3. <b>Nethermind</b>
-   - ZK-proof generation and verification
-   - Smart contract event handling
-   - Attestation validation logic
+## Potential next steps
 
-## What's next for Singlefact
-
-- Enhanced Privacy: Implement more ZK-SNARK circuits for complex attestation scenarios
-- Government Integration: Partner with regulatory bodies for official document verification
-- Cross-chain Attestations: Enable verification across multiple blockchain networks
-- Mobile SDK: Native apps for easier attestation submission and verification
+1. Use the MVP – A simple API + Web UI for zk-proof generation.
+2. Talk to potential customers in fintech, HR, and Web3.
+3. Offer trials and free use to gauge demand.
 
 ### Doing a Singlefact production deployment
 
 1. Update .env with production credentials
 2. Deploy ZK verification circuits
 3. Update attestation smart contracts on Base
-4. Configure AgentKit with production parameters
 5. Deploy web interface
-
-Project is open source: https://github.com/cbonoz/trifecta25
 
 
 ### Useful links
 
 * https://ethglobal.com/events/trifecta/prizes#zk-email
-*
 
 ### Screenshots

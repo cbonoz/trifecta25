@@ -16,7 +16,7 @@ import { coinbaseConnector } from '../contexts/wagmiConfig';
 const navigation = [
   { name: 'Home', href: '/', current: false },
   { name: 'Manage', href: '/manage', current: false },
-  { name: 'Verify', href: '/verify', current: false },
+  { name: 'Verify email', href: '/email/verify', current: false },
   { name: 'About', href: '/about', current: false },
 ];
 
