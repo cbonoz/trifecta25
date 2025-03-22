@@ -110,9 +110,52 @@ yarn dev
 3. Update attestation smart contracts on Base
 5. Deploy web interface
 
-
 ### Useful links
 
 * https://ethglobal.com/events/trifecta/prizes#zk-email
 
 ### Screenshots
+
+#### Home Page
+<p align='center'>
+  <img src="img/home.png" style="max-width: 800px;"/>
+</p>
+
+
+#### Upload Page
+<p align='center'>
+  <img src="img/upload.png" style="max-width: 800px;"/>
+</p>
+
+
+#### About Page
+<p align='center'>
+  <img src="img/about.png" style="max-width: 800px;"/>
+</p>
+
+#### Manage Page
+<p align='center'>
+  <img src="img/prompt.png" style="max-width: 800px;"/>
+</p>
+
+#### Verify Page
+<p align='center'>
+  <img src="img/verify.png" style="max-width: 800px;"/>
+</p>
+
+#### Email Text
+<p align='center'>
+  <img src="img/email_text.png" style="max-width: 800px;"/>
+</p>
+
+#### Email Failed
+<p align='center'>
+  <img src="img/email_failed.png" style="max-width: 800px;"/>
+</p>
+
+#### Email Progress
+<p align='center'>
+  <img src="img/email_progress.png" style="max-width: 800px;"/>
+</p>
+
+

@@ -11,6 +11,7 @@ export default function VerifyEmail() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [verification, setVerification] = useState<any>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
@@ -20,6 +21,7 @@ export default function VerifyEmail() {
       return;
     }
 
+    setFileName(file.name);
     setLoading(true);
     setError(null);
     setProof(null);
@@ -39,7 +41,9 @@ export default function VerifyEmail() {
       setVerification(verificationResult);
       console.log('Verified proof', blueprintKey, newProof, verificationResult);
     } catch (error: any) {
-      setError(error.message || "Error generating proof" + ". See console logs for more details.");
+      //
+      const message = typeof(error) === 'string' ? error : error.message || "Error generating proof";
+      setError(message + ". See console logs for more details.");
       console.error("Error:", error);
     } finally {
       setLoading(false);
@@ -83,6 +87,9 @@ export default function VerifyEmail() {
                   <p className="text-xs text-gray-500">EML file up to 10MB</p>
                 </div>
               </div>
+              {fileName && (
+                <p className="mt-2 text-sm text-gray-600">Selected file: {fileName}</p>
+              )}
             </div>
 
             {loading && (

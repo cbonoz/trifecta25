@@ -42,6 +42,15 @@ export default function AboutPage() {
               chars={8}
               className='text-lg'
             />
+
+
+            {/* Disclaimer - more discrete version */}
+            <div className='mt-6 border-t pt-4 text-sm'>
+              <p className='text-gray-500 italic'>
+                <span className='font-medium'>Note:</span> This application was developed as a
+                hackathon prototype and is provided as-is. Trial at your own discretion.
+              </p>
+            </div>
           </div>
 
           {/* Project Overview */}
@@ -58,13 +67,6 @@ export default function AboutPage() {
               <li>Decentralized authority management</li>
             </ul>
 
-            {/* Disclaimer - more discrete version */}
-            <div className='mt-6 border-t pt-4 text-sm'>
-              <p className='text-gray-500 italic'>
-                <span className='font-medium'>Note:</span> This application was developed as a
-                hackathon prototype and is provided as-is. Use or trial at your own discretion.
-              </p>
-            </div>
           </div>
 
           {/* Use Cases */}

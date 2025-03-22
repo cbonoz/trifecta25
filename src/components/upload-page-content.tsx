@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAccount } from 'wagmi';
 import { DocumentCheckIcon } from '@heroicons/react/24/outline';
@@ -20,14 +20,25 @@ export default function UploadPageContent() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [networkError, setNetworkError] = useState<string | null>(null);
   const signer = useEthersSigner({
     chainId: siteConfig.defaultChain.id as any,
   });
+
 
   if (!address) {
     return (
       <div className='flex min-h-screen flex-col items-center justify-center'>
         <h1 className='text-2xl font-bold'>Please connect your wallet</h1>
+      </div>
+    );
+  }
+
+  if (networkError) {
+    return (
+      <div className='flex min-h-screen flex-col items-center justify-center'>
+        <h1 className='text-2xl font-bold'>{networkError}</h1>
       </div>
     );
   }
@@ -44,7 +55,7 @@ export default function UploadPageContent() {
         title: formData.title,
         description: formData.description,
         statement: formData.statement,
-        proof: formData.proof,
+      proof: formData.proof,
         file: formData.file,
       });
       router.push('/manage');
@@ -62,6 +73,21 @@ export default function UploadPageContent() {
       statement: DEMO_DATA.statement,
       proof: DEMO_DATA.proof
     }));
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    setFormData({ ...formData, file });
+
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setImagePreview(null);
+    }
   };
 
   return (
@@ -127,7 +153,7 @@ export default function UploadPageContent() {
             placeholder="Paste your generated ZK proof here"
           />
           <p className='mt-1 text-sm text-amber-600'>
-            Note: Share this proof separately with your verifier. It will be used to validate your attestation.
+            Note: This proof should be shared separately with your verifier. It will be used to validate your attestation.
           </p>
         </div>
 
@@ -136,9 +162,17 @@ export default function UploadPageContent() {
           <input
             type='file'
             className='mt-1 block w-full'
-            onChange={(e) => setFormData({ ...formData, file: e.target.files?.[0] || null })}
+            onChange={handleFileChange}
             required
           />
+          {imagePreview && (
+            <div className='mt-2'>
+              <img src={imagePreview} alt="Image Preview" className='w-24 h-24 object-cover' />
+            </div>
+          )}
+          <p className='mt-4 text-sm text-gray-500'>
+            Note: A hash of the upload will be taken. This upload will not be shared.
+          </p>
         </div>
 
         <button
