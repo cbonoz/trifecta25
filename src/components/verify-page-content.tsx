@@ -7,6 +7,7 @@ import { useEthersSigner } from '@/app/contexts/useEthersSigner';
 import { siteConfig } from '@/constant/config';
 import { getAttestationDetails, validateAttestation } from '@/lib/methodCalls';
 import { Attestation } from '@/lib/types';
+import { AddressLink } from './ui/address-link';
 
 export default function VerifyPageContent() {
   const { attestationId } = useParams();
@@ -115,9 +116,14 @@ export default function VerifyPageContent() {
                 <dt className='text-sm font-medium text-gray-500'>Description</dt>
                 <dd className='text-sm text-gray-900'>{attestation.description}</dd>
               </div> */}
+
               <div>
                 <dt className='text-sm font-medium text-gray-500'>Owner</dt>
-                <dd className='text-sm font-mono text-gray-900'>{attestation.owner}</dd>
+                <AddressLink
+              address={attestation.owner}
+              chars={8}
+              className='text-sm'
+            />
               </div>
               <div>
                 <dt className='text-sm font-medium text-gray-500'>Created</dt>
