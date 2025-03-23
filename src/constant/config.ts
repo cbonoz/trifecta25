@@ -6,10 +6,10 @@ export const siteConfig = {
   titleTemplate: '%s | Singlefact',
   defaultTitle: 'Singlefact - ZK Attestation Management',
   defaultChain: sepolia,
-  slogan:
-    'A SaaS platform to manage your ZK attestations securely and efficiently.',
   description:
-    'Singlefact provides a privacy-preserving ZK attestation management system, enabling businesses to validate identities and credentials without exposing sensitive data.',
+    'A SaaS platform to manage your ZK attestations securely and efficiently.',
+  slogan:
+    'Singlefact provides a privacy-preserving ZK attestation management platform, enabling businesses and trusted parties to validate identities and credentials without exposing sensitive data.',
   url: 'https://www.github.com/cbonoz/trifecta25',
   contractAddress: requireEnv(process.env.NEXT_PUBLIC_CONTRACT_ADDRESS, 'NEXT_PUBLIC_CONTRACT_ADDRESS'),
   zkBlueprint: requireEnv(process.env.NEXT_PUBLIC_ZK_BLUEPRINT, 'NEXT_PUBLIC_ZK_BLUEPRINT'),

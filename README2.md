@@ -1,20 +1,31 @@
 <p align='center'>
-  <img src="https://i.ibb.co/SXpVzYXJ/stamp-x.png"/>
+  <img src="https://i.ibb.co/XrvCbkSt/singlefact-logo.png"/>
 </p>
 
 # Singlefact
 
-A SaaS Platform for Privacy-Preserving Document Verification.
+A SaaS Platform for privacy preserving fact sharing managed on smart contracts with ZK proofs.
 
 Built for Trifecta 2025.
 
 Video demo:
 
-Live Demo Url: https://singlefact.vercel.app (Sepolia)
+Live Demo Url: https://singlefact.vercel.app (deployed on Sepolia testnet)
 
-## Inspiration
+Today, proving facts about ourselves often requires exposing more data than necessary.
 
-We wanted to revolutionize how personal information is verified while maintaining privacy. Common scenarios like:
+Examples:
+1. Showing full bank statements to prove minimum balance
+2. Sharing entire passport to verify age
+3. Revealing complete transcripts for degree verification
+4. Any time you find yourself sharing a full document "This creates unnecessary privacy and security risks for just one piece of data"
+
+And current solutions can be privacy invasive, Technically complex (especially ZK proofs), Not business-friendly, or lacking standardization
+
+## Solution
+
+We wanted to evolve how personal information is verified while maintaining privacy. Common scenarios like:
+
 - Proving minimum bank balance without revealing actual account details
 - Verifying age/citizenship without exposing full passport information
 - Confirming employment status without sharing sensitive payroll data
@@ -49,6 +60,7 @@ Users can:
 ## How it Works
 
 ### Proof Registration and Issuance
+
 1. Organizations upload credential data (e.g., passports, bank statements, educational records).
 2. Data is digitally signed by the issuing authority.
 3. Document hashes and signatures are stored on-chain for verification (using Succinct).
@@ -72,11 +84,7 @@ Singlefact generates compact proofs that:
 
 ## Business Model
 
-- Usage-based pricing tied to number of attestations
-- Example -
-Free tier: 10 proofs/month.
-$99/mo: 1,000 proofs.
-$499/mo: Enterprise plan.
+- Usage-based pricing tied to number of attestations created and managed.
 
 ## Technologies used
 
@@ -85,7 +93,7 @@ Succinct:  Singlefact uses the EVM-compatible onchain verification with the Sepo
 
 https://docs.succinct.xyz/docs/network/developers/request-proofs
 
-ZkEmail: Authenticity of generated emails is important when working with personal information and validations. Singlefact uses a defined email template that can be regex'd by a custom registry.
+ZkEmail: Authenticity of generated emails is critical when working with personal information and validations. Singlefact uses a defined email template that can be regex'd by a custom registry. This can 
 
 Registry entry here: https://registry.zk.email/60b8c051-cbcc-4a70-a92d-ae55fb8cc1cf
 

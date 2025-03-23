@@ -70,7 +70,7 @@ export default function ManagePage() {
     }
   };
 
-  if (!address) {
+  if (!address || !signer) {
     return (
       <div className='flex min-h-screen flex-col items-center justify-center'>
         <h1 className='text-2xl font-bold'>Please connect your wallet</h1>
