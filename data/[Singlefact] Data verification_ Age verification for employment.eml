@@ -1,0 +1,43 @@
+MIME-Version: 1.0
+Date: Sat, 22 Mar 2025 19:51:20 -0400
+Message-ID: <CAHWNYj3fWB+1MA_4eHnoXM0-xAmR_7XcGUkDyUby-eardTADaw@mail.gmail.com>
+Subject: [Singlefact] Data verification: Age verification for employment
+From: Chris Buonocore <blackshoalgroup@gmail.com>
+To: Chris Buonocore <blackshoalgroup@gmail.com>
+Content-Type: multipart/alternative; boundary="000000000000455d3f0630f70c67"
+
+--000000000000455d3f0630f70c67
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+I'd like to share an data attestation for Age verification for employment
+with you that you can verify:
+
+Attestation ID:
+0x13c2b9873c2f29392a4e61e7c07a8792a7fe7d1aa4f2aa8b8db0a800f4f8e2d6
+
+To verify this attestation, please visit:
+http://localhost:3000/verify/0x13c2b9873c2f29392a4e61e7c07a8792a7fe7d1aa4f2aa8b8db0a800f4f8e2d6
+
+You'll need the following proof code during verification:
+ZK-SNARK-AbC123XyZ_DEMO_PROOF-This-would-be-a-long-base64-encoded-zk-proof-string-in-production
+
+Thank you,
+
+--000000000000455d3f0630f70c67
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Hello,<br><br>I&#39;d like to share an data attestation fo=
+r Age verification for employment with you that you can verify:<br><br>Atte=
+station ID: 0x13c2b9873c2f29392a4e61e7c07a8792a7fe7d1aa4f2aa8b8db0a800f4f8e=
+2d6<br><br>To verify this attestation, please visit:<br><a href=3D"http://l=
+ocalhost:3000/verify/0x13c2b9873c2f29392a4e61e7c07a8792a7fe7d1aa4f2aa8b8db0=
+a800f4f8e2d6">http://localhost:3000/verify/0x13c2b9873c2f29392a4e61e7c07a87=
+92a7fe7d1aa4f2aa8b8db0a800f4f8e2d6</a><br><br>You&#39;ll need the following=
+ proof code during verification:<br>ZK-SNARK-AbC123XyZ_DEMO_PROOF-This-woul=
+d-be-a-long-base64-encoded-zk-proof-string-in-production<br><br>Thank you,<=
+/div>
+
+--000000000000455d3f0630f70c67--

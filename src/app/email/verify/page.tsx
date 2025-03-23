@@ -88,7 +88,7 @@ export default function VerifyEmail() {
                 </div>
               </div>
               {fileName && (
-                <p className="mt-2 text-sm text-gray-600">Selected file: {fileName}</p>
+                <p className="mt-2 text-sm text-gray-600">Verifying file: {fileName}</p>
               )}
             </div>
 
