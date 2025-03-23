@@ -9,9 +9,9 @@ A privacy-preserving ZK attestation management platform, enabling trusted partie
 
 Built for Trifecta 2025.
 
-Video demo:
+Video demo: https://youtu.be/LYgvecyWRdM
 
-Live Demo Url: https://singlefact.vercel.app (deployed on Sepolia testnet)
+Live Demo Url: https://singlefact.vercel.app (note should connect to Eth Sepolia testnet!)
 
 Today, proving facts about ourselves often requires exposing more data than necessary.
 
