@@ -10,6 +10,15 @@ export const requireEnv = (value: any, key: string): string => {
 }
 
 
+export const basicProof = (p: any) => {
+  const proof = p.props.input
+  delete proof.emailHeader
+  return {
+    proof
+  }
+}
+
+
 export const generateEmail = (link: string): string => {
   return `<html>
   <body>

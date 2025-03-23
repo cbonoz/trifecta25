@@ -189,6 +189,9 @@ export default function ManagePage() {
                 Copy the subject and body below to share the attestation via email. For authenticity,
                 ensure the email is sent from a business email domain.
               </p>
+              <p className="text-sm text-gray-500 mb-2">
+                Note: A business email address is needed to ensure the authenticity and credibility of the attestation.
+              </p>
             </div>
 
             {selectedAttestation && (

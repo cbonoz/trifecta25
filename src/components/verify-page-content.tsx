@@ -8,6 +8,7 @@ import { siteConfig } from '@/constant/config';
 import { getAttestationDetails, validateAttestation } from '@/lib/methodCalls';
 import { Attestation } from '@/lib/types';
 import { AddressLink } from './ui/address-link';
+import VerifyEmail from './verify-email';
 
 export default function VerifyPageContent() {
   const { attestationId } = useParams();
@@ -94,7 +95,6 @@ export default function VerifyPageContent() {
     return null; // Wait for the attestation to load
   }
 
-
   return (
     <div className='container mx-auto px-4 py-8'>
       <div className='max-w-2xl mx-auto'>
@@ -107,8 +107,6 @@ export default function VerifyPageContent() {
         </div>
 
         <div className='bg-white shadow rounded-lg p-6 space-y-6'>
-
-
           {/* Attestation Details */}
           <div>
             <h2 className='text-lg font-semibold mb-4'>Attestation Details</h2>
@@ -121,14 +119,13 @@ export default function VerifyPageContent() {
                 <dt className='text-sm font-medium text-gray-500'>Description</dt>
                 <dd className='text-sm text-gray-900'>{attestation.description}</dd>
               </div> */}
-
               <div>
                 <dt className='text-sm font-medium text-gray-500'>Owner</dt>
                 <AddressLink
-              address={attestation.owner}
-              chars={8}
-              className='text-sm'
-            />
+                  address={attestation.owner}
+                  chars={8}
+                  className='text-sm'
+                />
               </div>
               <div>
                 <dt className='text-sm font-medium text-gray-500'>Created</dt>
@@ -144,6 +141,14 @@ export default function VerifyPageContent() {
                 </dd>
               </div>
             </dl>
+          </div>
+
+          {/* Verify Email Section */}
+          <div className='mt-8'>
+            <p className='text-sm text-gray-600 mb-2'>
+              <a className='hover:underline text-blue-500' href="https://support.google.com/mail/answer/9261412?hl=en">Download</a> your received attestation email as a .eml file and upload it here to verify its authenticity.
+            </p>
+            <VerifyEmail />
           </div>
 
           {/* Statement Section */}
@@ -215,13 +220,13 @@ export default function VerifyPageContent() {
           )}
         </div>
 
-            {/* Contract Link - New section */}
-            <div className='text-right'>
-            <AddressLink
-              address={siteConfig.contractAddress}
-              chars={6}
-              className='text-sm text-primary-600 hover:text-primary-800'/>
-          </div>
+        {/* Contract Link - New section */}
+        <div className='text-right'>
+          <AddressLink
+            address={siteConfig.contractAddress}
+            chars={6}
+            className='text-sm text-primary-600 hover:text-primary-800'/>
+        </div>
       </div>
     </div>
   );

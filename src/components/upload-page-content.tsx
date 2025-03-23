@@ -26,7 +26,6 @@ export default function UploadPageContent() {
     chainId: siteConfig.defaultChain.id as any,
   });
 
-
   if (!address) {
     return (
       <div className='flex min-h-screen flex-col items-center justify-center'>
@@ -55,7 +54,7 @@ export default function UploadPageContent() {
         title: formData.title,
         description: formData.description,
         statement: formData.statement,
-      proof: formData.proof,
+        proof: formData.proof,
         file: formData.file,
       });
       router.push('/manage');
@@ -105,7 +104,7 @@ export default function UploadPageContent() {
           </svg>
         </button>
       </div>
-      <form onSubmit={handleSubmit} className='max-w-lg space-y-4'>
+      <form onSubmit={handleSubmit} className='max-w-lg space-y-4' style={{ maxWidth: '800px' }}>
         <div>
           <label className='block text-sm font-medium text-gray-700'>Title</label>
           <input
