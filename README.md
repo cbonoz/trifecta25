@@ -173,4 +173,9 @@ yarn dev
   <img src="img/email_progress.png" style="max-width: 800px;"/>
 </p>
 
+#### Each creation/verification creates a record on the app's smart contract
+<p align='center'>
+  <img src="img/smart_contract.png" style="max-width: 800px;"/>
+</p>
+
 
