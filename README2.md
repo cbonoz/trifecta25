@@ -4,7 +4,8 @@
 
 # Singlefact
 
-A SaaS Platform for privacy preserving fact sharing managed on smart contracts with ZK proofs.
+<!-- A SaaS Platform for privacy preserving fact sharing managed on smart contracts with ZK proofs. -->
+A privacy-preserving ZK attestation management platform, enabling trusted parties to validate credentials without exposing sensitive data.
 
 Built for Trifecta 2025.
 
@@ -14,7 +15,10 @@ Live Demo Url: https://singlefact.vercel.app (deployed on Sepolia testnet)
 
 Today, proving facts about ourselves often requires exposing more data than necessary.
 
-Examples:
+Example attestation (hosted): 
+
+## Example use cases
+
 1. Showing full bank statements to prove minimum balance
 2. Sharing entire passport to verify age
 3. Revealing complete transcripts for degree verification
@@ -82,26 +86,25 @@ Singlefact generates compact proofs that:
 - Validate document authenticity
 - Maintain privacy of underlying data
 
-## Business Model
-
-- Usage-based pricing tied to number of attestations created and managed.
-
 ## Technologies used
 
-Sepolia: A deployed smart contract Singlefact.sol manages the state of the app and the generated attestations.
-Succinct:  Singlefact uses the EVM-compatible onchain verification with the Sepolia gateway to do the on chain proofs of the validated emails. The EVM-compatibility of Succinct made it possible for a contract to be able to manage both the full state of the app (and app methods such as generating and querying attestations) while not requiring a separate datasource for proofs and verification.
+<b>Succinct SP1</b>: Singlefact uses the EVM-compatible onchain verification with the Sepolia gateway to do the on chain proofs of the validated emails. The EVM-compatibility of Succinct made it possible for a contract to be able to manage both the full state of the app (and app methods such as generating and querying attestations) while not requiring a separate datasource for proofs and verification. Singlefact uses the onchain verifier to take a proof generated locally for an attestation, tie it to the created record on the Singlefact blockchain, and produce a verification via a contract call managed through the Singlefact UI.
 
 https://docs.succinct.xyz/docs/network/developers/request-proofs
 
-ZkEmail: Authenticity of generated emails is critical when working with personal information and validations. Singlefact uses a defined email template that can be regex'd by a custom registry. This can 
+<b>zkEmail</b>: Authenticity of generated emails is critical when working with personal information and validations. Singlefact uses a defined email template that can be regex'd by a custom registry. zkEmail can be used to verify that emails sent with proofs came from authorized senders, with a body that contains the proper recipient, and content structure (proof + attestation title/description).
 
 Registry entry here: https://registry.zk.email/60b8c051-cbcc-4a70-a92d-ae55fb8cc1cf
+
+<b>Sepolia</b>: A deployed smart contract Singlefact.sol manages the state of the app and the generated attestations.
 
 ## Potential future work
 
 1. Use the MVP – A simple API + Web UI for zk-proof generation.
 2. Talk to potential customers in fintech, HR, and Web3.
 3. Offer trials and free use to gauge demand.
+4. Usage-based pricing tied to number of attestations created and managed.
+
 
 ### Running the project
 
@@ -120,6 +123,7 @@ yarn dev
 
 ### Useful links
 
+* https://docs.succinct.xyz/docs/sp1/verification/onchain/getting-started
 * https://ethglobal.com/events/trifecta/prizes#zk-email
 
 ### Screenshots
@@ -129,12 +133,10 @@ yarn dev
   <img src="img/home.png" style="max-width: 800px;"/>
 </p>
 
-
 #### Upload Page
 <p align='center'>
   <img src="img/upload.png" style="max-width: 800px;"/>
 </p>
-
 
 #### About Page
 <p align='center'>
@@ -144,6 +146,11 @@ yarn dev
 #### Manage Page
 <p align='center'>
   <img src="img/prompt.png" style="max-width: 800px;"/>
+</p>
+
+#### Generating a proof locally
+<p align='center'>
+  <img src="img/generate_proof.png" style="max-width: 800px;"/>
 </p>
 
 #### Verify Page
