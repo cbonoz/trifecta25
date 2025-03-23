@@ -28,7 +28,7 @@ export default function VerifyEmail() {
     setVerification(null);
 
     const blueprintKey = siteConfig.zkBlueprint as any;
-    console.log("verifying", blueprintKey);
+    console.log("verifying zkemail");
 
     try {
       const eml = await file.text()
