@@ -1,5 +1,5 @@
 <p align='center'>
-  <img src="https://github.com/cbonoz/trifecta25/blob/main/img/singlefact_logo.png"/>
+  <img src="https://github.com/cbonoz/trifecta25/blob/main/img/singlefact_bw.png"/>
 </p>
 
 # Singlefact
